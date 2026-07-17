@@ -13,6 +13,13 @@
 // ---------------------------------------------------------------------------
 // Tipos
 // ---------------------------------------------------------------------------
+export interface ParsedUrl {
+  protocol: string;
+  host: string;
+  pathname: string;
+  search: string;
+  query: [string, string][];
+}
 
 /** Resultado de analizar una URL. */
 export interface UrlParts {
@@ -60,9 +67,24 @@ export type Headers = Record<string, string>;
  * Si la URL no es válida, `new URL()` lanza TypeError — no hace falta
  * que lo manejes aparte, se propagará solo.
  */
+//funcion implementada
 export function parseUrl(url: string): UrlParts {
-  // TODO: tu implementación aquí
-  throw new Error("Not implemented");
+    try {
+    const { URL } = require('url');
+    const parsed = new URL(url);
+    
+    const query: [string, string][] = Array.from(parsed.searchParams.entries());
+
+    return {
+      protocol: parsed.protocol,
+      host: parsed.host,
+      pathname: parsed.pathname,
+      search: parsed.search,
+      query: query
+    };
+  } catch (error) {
+    throw new Error('URL inválida');
+  }
 }
 
 /**
