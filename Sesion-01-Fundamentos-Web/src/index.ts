@@ -72,9 +72,7 @@ export function parseUrl(url: string): UrlParts {
     try {
     const { URL } = require('url');
     const parsed = new URL(url);
-    
     const query: [string, string][] = Array.from(parsed.searchParams.entries());
-
     return {
       protocol: parsed.protocol,
       host: parsed.host,
@@ -133,8 +131,24 @@ export function classifyStatus(code: number): StatusCategory {
  * nombre y valor. Recuerda `.trim()` para quitar espacios sobrantes.
  */
 export function parseHeaders(text: string): Headers {
-  // TODO: tu implementación aquí
-  throw new Error("Not implemented");
+  const result: Headers = {};
+  if (!text) {
+    return result;
+  }
+  const lines = text.split('\n');
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    if (!trimmedLine || !trimmedLine.includes(':')) {
+      continue;
+    }
+    const colonIndex = trimmedLine.indexOf(':');
+    const key = trimmedLine.substring(0, colonIndex).trim();
+    const value = trimmedLine.substring(colonIndex + 1).trim();
+    if (key) {
+      result[key] = value;
+    }
+  return result;
+  }
 }
 
 /**
@@ -156,8 +170,24 @@ export function summarizeRequest(
   status: number,
   headersText: string,
 ): string {
-  // TODO: tu implementación aquí
-  throw new Error("Not implemented");
+  const statusCategory = classifyStatus(status);
+  const parsedHeaders = parseHeaders(headersText);
+
+  let summary = `Resumen de la Petición\n`;
+  summary += `---------------------\n`;
+  summary += `URL: ${url}\n`;
+  summary += `Estado: ${status} (${statusCategory})\n`;
+  summary += `Cabeceras:\n`;
+
+  const headerKeys = Object.keys(parsedHeaders);
+  if (headerKeys.length === 0) {
+    summary += `  (Sin cabeceras)\n`;
+  } else {
+    for (const key of headerKeys) {
+      summary += `  - ${key}: ${parsedHeaders[key]}\n`;
+    }
+  }
+  return summary;
 }
 
 // ---------------------------------------------------------------------------
