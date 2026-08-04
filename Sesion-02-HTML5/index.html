@@ -10,7 +10,7 @@
 
   <!-- TODO: header con navegacion a las otras 3 paginas -->
   <header>
-    <h1>Mi Sitio</h1>
+    <h1>Recomendaciones Musicales</h1>
     <!-- TODO: <nav> con enlaces a pagina1.html, pagina2.html, pagina3.html -->
   </header>
 
@@ -19,30 +19,37 @@
       <h2>Bienvenido</h2>
 
       <!-- TODO: usa <figure> + <figcaption> para una imagen con alt y loading="lazy" -->
-      <img src="https://via.placeholder.com/800x400"
-           alt="Imagen de bienvenida"
-           width="800" height="400"
-           loading="lazy">
 
-      <p>Parrafo de introduccion. Lorem ipsum dolor sit amet.</p>
+      <p>Alguna vez no has encontrado que escuchar en tu playlist, bueno, aquí te recomendamos algunos albumes y artistas para que renueves tu playlist</p>
+
+       <header>
+    <h1>Explora nuestras recomendaciones del día</h1>
+    <p>click en cada una para saber más</p>
+    <nav>
+      <ul>
+        <p>Para las personas fiesteras</p>
+        <li><a href="pagina1.html">Brat - Charli XCX</a></li>
+        <p>Para los romanticos</p>
+        <li><a href="pagina2.html">Everything I know abour love - Laufey</a></li>
+        <p>Para los dolidos</p>
+        <li><a href="pagina3.html">Femme Fatale Vol.2 - Mon Laferte</a></li>
+        <p>Nustra recomendación personal</p>
+        <li><a href="https://www.youtube.com/watch?v=4qv16WcOCYA&list=OLAK5uy_mTx_iMZoQAnIUxzR5UeZKh-7RthJklceg" target="_blank" rel="noopener noreferrer">Mayhem - Lady Gaga</a></li>
+      </ul>
+    </nav>
+  </header>
 
       <!-- TODO: usa <dialog> + un boton con command/commandfor (Invoker Commands API) -->
-      <dialog id="bienvenida">
-        <h3>Hola!</h3>
-        <p>Esto es un dialog modal nativo.</p>
-        <form method="dialog">
-          <button>Cerrar</button>
-        </form>
-      </dialog>
-      <button command="show-modal" commandfor="bienvenida">
-        Abrir dialog
-      </button>
+      
 
+<button onclick="document.getElementById('musicaDialog').showModal()">
+  Abrir Música
+</button>
       <!-- TODO: usa popover para un menu o tooltip -->
       <button popovertarget="menu-ayuda">?</button>
       <div id="menu-ayuda" popover>
         <h4>Ayuda</h4>
-        <p>Contenido del popover...</p>
+        <p>No hay ayuda</p>
       </div>
 
       <!-- TODO: formulario con al menos 3 inputs (text, email, etc.) -->
