@@ -18,6 +18,10 @@
 /* TODO: Diseño responsivo */
 /* - Usar @media queries para cambiar entre mobile y desktop */
 /* - La galería debe ser responsiva usando Grid + media queries */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 .container {
     background-image: url(img/fondo.png);
     padding: 20px;
@@ -68,4 +72,17 @@ img{
     max-width: 60%;
     border: solid black;
     border-radius: 10%;
+}
+
+.btn-comprar{
+    background-color: aqua;
+    border-style: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.btn-comprar:hover{
+    background: #c734c0; transform: translateY(-4px);
 }
