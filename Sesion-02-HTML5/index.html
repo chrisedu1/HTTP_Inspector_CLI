@@ -43,11 +43,24 @@
   </header>
 
       <!-- TODO: usa <dialog> + un boton con command/commandfor (Invoker Commands API) -->
-      
+      <button commandfor="musicaDialog" command="show-modal" style="padding: 10px 18px; font-weight: bold; cursor: pointer;">
+        Abrir Reproductor
+      </button>
+      <dialog id="musicaDialog" style="border: none; border-radius: 12px; padding: 20px; text-align: center; max-width: 400px;">
+        <h2 style="margin-top:0;">Reproductor de Música</h2>
+        <p>Miley Cyrus - Golden Burning Sun</p>
 
-<button onclick="document.getElementById('musicaDialog').showModal()">
-  Abrir Música
-</button>
+        <img src="https://img.youtube.com/vi/Z0UKkymdApU/hqdefault.jpg" alt="Portada" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+
+        <div>
+          <a href="https://www.youtube.com/watch?v=Z0UKkymdApU" target="_blank" style="background-color: #ff0000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+            Escuchar en YouTube
+          </a>
+        </div>
+        <button commandfor="musicaDialog" command="close" style="padding: 6px 12px; cursor: pointer; margin-top: 15px;">
+          Cerrar
+        </button>
+      </dialog>
       <!-- TODO: usa popover para un menu o tooltip -->
       <button popovertarget="menu-ayuda">?</button>
       <div id="menu-ayuda" popover>
