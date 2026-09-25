@@ -1,15 +1,12 @@
 /**
  * app.js — Servidor Express (API REST + sitio estático)
  * Tarea Sesión 7 · Desarrollo Web · UMG
- *
- * TODO: implementa los middlewares y las rutas marcadas.
- * Los tests de `tests/api.test.js` describen exactamente el contrato
- * que debe cumplir cada endpoint (son tu guía).
  */
 
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { RepositorioAlumnos } from './repositorio.js';
 
 // __dirname en ES Modules
 export const __filename = fileURLToPath(import.meta.url);
@@ -21,33 +18,42 @@ export const __dirname = dirname(__filename);
 
 /**
  * "Autenticación falsa": exige el header `x-api-key`.
- *
- * TODO:
- *   - Lee el header con req.get('x-api-key')
- *   - Compáralo con process.env.API_KEY (si no está definida usa 'umg-2026')
- *   - Si no coincide → res.status(401).json({ error: 'No autorizado' })
- *   - Si coincide    → next()
- *
  * @type {import('express').RequestHandler}
  */
 export function autenticacionFalsa(req, res, next) {
-    next(); // ← TODO: reemplazar por la validación del header
+    const clave = req.get('x-api-key');
+    const claveValida = process.env.API_KEY ?? 'umg-2026';
+
+    if (!clave || clave !== claveValida) {
+        return res.status(401).json({ error: 'No autorizado' });
+    }
+    next();
 }
 
 /**
  * Validación básica del cuerpo de un alumno.
- *
- * TODO: valida que
- *   - `nombre`, `apellido` y `email` sean strings no vacíos (trim)
- *   - `email` contenga '@'
- *   - `edad`, si viene, sea un número mayor o igual a 0
- *   Si algo falla responde 400 con { error: '<mensaje>' }.
- *   Si todo está bien, llama a next().
- *
  * @type {import('express').RequestHandler}
  */
 export function validarAlumno(req, res, next) {
-    next(); // ← TODO: reemplazar por las validaciones
+    const { nombre, apellido, email, edad } = req.body;
+
+    if (!nombre || typeof nombre !== 'string' || !nombre.trim()) {
+        return res.status(400).json({ error: 'El nombre es obligatorio' });
+    }
+    if (!apellido || typeof apellido !== 'string' || !apellido.trim()) {
+        return res.status(400).json({ error: 'El apellido es obligatorio' });
+    }
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+        return res.status(400).json({ error: 'El email debe incluir "@"' });
+    }
+    if (edad !== undefined && edad !== null && edad !== '') {
+        const edadNum = Number(edad);
+        if (isNaN(edadNum) || edadNum < 0) {
+            return res.status(400).json({ error: 'La edad debe ser un número >= 0' });
+        }
+    }
+
+    next();
 }
 
 // ============================================================
@@ -70,30 +76,46 @@ export function crearApp(repositorio) {
     // Sitio web estático (public/index.html, styles.css, app.js)
     app.use(express.static(join(__dirname, '..', 'public')));
 
-    // TODO: GET /alumnos → lista todos                    → 200 [ ...alumnos ]
+    // GET /alumnos → lista todos
     app.get('/alumnos', (req, res) => {
-        res.status(501).json({ error: 'TODO: GET /alumnos' });
+        res.json(repositorio.listar());
     });
 
-    // TODO: GET /alumnos/:id → uno o 404
+    // GET /alumnos/:id → uno o 404
     app.get('/alumnos/:id', (req, res) => {
-        res.status(501).json({ error: 'TODO: GET /alumnos/:id' });
+        const alumno = repositorio.obtener(req.params.id);
+        if (!alumno) {
+            return res.status(404).json({ error: 'Alumno no encontrado' });
+        }
+        res.json(alumno);
     });
 
-    // TODO: POST /alumnos → crear (requiere autenticacionFalsa + validarAlumno) → 201
-    app.post('/alumnos', (req, res) => {
-        res.status(501).json({ error: 'TODO: POST /alumnos' });
+    // POST /alumnos → crear
+    app.post('/alumnos', autenticacionFalsa, validarAlumno, (req, res) => {
+        const nuevo = repositorio.crear(req.body);
+        res.status(201).json(nuevo);
     });
 
-    // TODO: PUT /alumnos/:id → actualizar (auth + validarAlumno) → 200 o 404
-    app.put('/alumnos/:id', (req, res) => {
-        res.status(501).json({ error: 'TODO: PUT /alumnos/:id' });
+    // PUT /alumnos/:id → actualizar
+    app.put('/alumnos/:id', autenticacionFalsa, validarAlumno, (req, res) => {
+        const actualizado = repositorio.actualizar(req.params.id, req.body);
+        if (!actualizado) {
+            return res.status(404).json({ error: 'Alumno no encontrado' });
+        }
+        res.json(actualizado);
     });
 
-    // TODO: DELETE /alumnos/:id → eliminar (auth) → 204 o 404
-    app.delete('/alumnos/:id', (req, res) => {
-        res.status(501).json({ error: 'TODO: DELETE /alumnos/:id' });
+    // DELETE /alumnos/:id → eliminar
+    app.delete('/alumnos/:id', autenticacionFalsa, (req, res) => {
+        const eliminado = repositorio.eliminar(req.params.id);
+        if (!eliminado) {
+            return res.status(404).json({ error: 'Alumno no encontrado' });
+        }
+        res.status(204).send();
     });
 
     return app;
 }
+
+export const repo = new RepositorioAlumnos();
+export const app = crearApp(repo);
